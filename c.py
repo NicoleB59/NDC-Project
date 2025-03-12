@@ -89,20 +89,33 @@ def askVersion():
 
 def searchForFile():
     print("What is the server's port?")
-    portToCall = int(input())
+    portToCall = int(input().strip())
     
-    print("Enter the filename to search for:")
+    print("Enter the filename to search for: ")
     filename = input().strip()
     
     try: 
-        response = requests.post(f"http://localhost:{portToCall}/", json=request("searchFile"), params={"filename": filename} )
+        response = requests.post(f"http://localhost:{portToCall}/", json=request("searchFile", params={"filename": filename}))
         parsed = parse(response.json())
         print(parsed.result)
     except:
         print("Are you sure that port exists?")
-    
 
-        
+def startNewServer():
+    print("Enter server number to start: ")
+    s_num = input().strip()
+
+    print("Which server should handle this request?")
+    portToCall = input().strip()
+
+    try:
+        response = requests.post(f"http://localhost:{portToCall}/", json=request("startUP", params={"server_num": s_num}))
+        parsed = parse(response.json())
+        print(parsed.result)
+    except Exception as e:
+        print(f"Error: {e}")
+        print("Are you sure that port exists?")
+
 print("Welcome!")
 
 while True:
@@ -114,6 +127,7 @@ while True:
     print("5. Who are you?")
     print("6. Get server Python Version")
     print("7. Search for a file")
+    print("8. Start a new server")
 
     option = input().strip()
     
@@ -142,6 +156,9 @@ while True:
     
     elif option == 7:
         searchForFile()
+    
+    elif option == 8:
+        startNewServer()
         
     
         

@@ -2,6 +2,7 @@ from jsonrpcserver import Success, method, serve
 import sys
 import os
 import subprocess
+import socket
 
 if len(sys.argv) > 1:
     serverNumber = sys.argv[1]
@@ -59,13 +60,24 @@ def getVersion():
 # The server should search for the filename the user has sent in the current directory
 @method
 def searchFile(filename):
-    if os.path.exists(filename):
+    file_path = os.path.join(os.getcwd(), filename)
+    if os.path.exists(file_path):
         return Success(f"File '{filename}' found in the directory.")
     else:
         return Success(f"File not found in the directory.")
 
 # method for startup X - if X = 2, a new server should start on port 5002
-
+@method
+def startUP(server_num):
+    try: 
+        port = 5000 + int(server_num)
+        
+        subprocess.Popen(["python3", "server.py", str(server_num)])
+        return Success(f"Server {server_num} started on port {port}")
+    
+    except Exception as e:
+        return Success(f"Failed to start server: {str(e)}")
+        
 # method for shutdown X - A message should be sent to the server that is running on port X to shutdown, where X is the last number added to the port,  500X.
 # This should also trigger an offline command as shown below.
 
