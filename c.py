@@ -121,6 +121,32 @@ def shutDownServer():
     portToCall = input().strip()
     requests.post(f"http://localhost:{portToCall}/", json=request("shutDOWN"))
 
+def listFriends():
+    print("What is the server's port?")
+    portToCall = int(input().strip())
+    
+    try:
+        response = requests.post(f"http://localhost:{portToCall}/", json=request("list_friends"))
+        parsed = parse(response.json())
+        print(parsed.result)
+    except:
+        print("Are you sure that port exists?")
+        
+def onlineFriends():
+    print("What is this server's port?")
+    portToCall = int(input().strip())
+    
+    print("Which server should be notified?")
+    notifyPort = int(input().strip())
+    
+    try:
+        response = requests.post(f"http://localhost:{portToCall}/", json=request("online"))
+        parsed = parse(response.json())
+        print(parsed.result)
+    except:
+        print("Are you sure that port exists?")
+
+
 print("Welcome!")
 
 while True:
@@ -134,6 +160,7 @@ while True:
     print("7. Search for a file")
     print("8. Start a new server")
     print("9. Shutdown the server")
+    print("10. List Friends")
 
     option = input().strip()
     
@@ -168,6 +195,9 @@ while True:
     
     elif option == 9:
         shutDownServer()
+    
+    elif option == 10:
+        listFriends()
     
         
     

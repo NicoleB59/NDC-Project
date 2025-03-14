@@ -74,6 +74,7 @@ def startUP(server_num):
         port = 5000 + int(server_num)
         
         subprocess.Popen(["python3", "server.py", str(server_num)])
+        
         return Success(f"Server {server_num} started on port {port}")
     
     except Exception as e:
@@ -92,10 +93,21 @@ def shutDOWN():
 
 # method for list_friends - The current server should return a list of port numbers it knows other servers are running on. 
 # E.g., the server’s friends.
+@method
+def list_friends():
+    return Success(myFriends)
 
 # method for online X - When this command is received by a server, the server should attempt to tell all the other servers it is now online and they should add this port to their list of friends.
-
+def online(port):
+    if port not in myFriends:
+        myFriends.append(port)
+    return Success(f"Server {port} added to friends list!!")
+    
 # method for offline X - When this command is received by a server, it should tell all the other servers that the server on the defined port has shutdown and remove it from their list of friends.
+def offline(port):
+    if port in myFriends:
+        myFriends.remove(port)
+    return Success(f"Server {port} removed from friends list!!")
 
 # method for heartbeat - When a client sends this command to a server, the server should ping all its server friends and return the result to the client.
 
