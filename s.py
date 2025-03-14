@@ -1,3 +1,4 @@
+import threading
 from jsonrpcserver import Success, method, serve
 import sys
 import os
@@ -80,6 +81,14 @@ def startUP(server_num):
         
 # method for shutdown X - A message should be sent to the server that is running on port X to shutdown, where X is the last number added to the port,  500X.
 # This should also trigger an offline command as shown below.
+@method
+def shutDOWN():
+    try: 
+        print("Shutdown.")
+        os._exit(0) # terminates the whole program
+    except Exception as e:
+        return Success(f"Server failed to shutdown...  >:(")
+        
 
 # method for list_friends - The current server should return a list of port numbers it knows other servers are running on. 
 # E.g., the server’s friends.

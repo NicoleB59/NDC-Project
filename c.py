@@ -85,7 +85,7 @@ def askVersion():
         parsed = parse(response.json())
         print(parsed.result)
     except:
-        print("Are your sure taht port exists?")
+        print("Are your sure that port exists?")
 
 def searchForFile():
     print("What is the server's port?")
@@ -116,6 +116,11 @@ def startNewServer():
         print(f"Error: {e}")
         print("Are you sure that port exists?")
 
+def shutDownServer():
+    print("Enter server number to shutdown: ")
+    portToCall = input().strip()
+    requests.post(f"http://localhost:{portToCall}/", json=request("shutDOWN"))
+
 print("Welcome!")
 
 while True:
@@ -128,6 +133,7 @@ while True:
     print("6. Get server Python Version")
     print("7. Search for a file")
     print("8. Start a new server")
+    print("9. Shutdown the server")
 
     option = input().strip()
     
@@ -159,6 +165,10 @@ while True:
     
     elif option == 8:
         startNewServer()
+    
+    elif option == 9:
+        shutDownServer()
+    
         
     
         
