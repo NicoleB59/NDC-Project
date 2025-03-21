@@ -113,13 +113,13 @@ def startNewServer():
         parsed = parse(response.json())
         print(parsed.result)
     except Exception as e:
-        print(f"Error: {e}")
         print("Are you sure that port exists?")
 
 def shutDownServer():
     print("Enter server number to shutdown: ")
     portToCall = input().strip()
     requests.post(f"http://localhost:{portToCall}/", json=request("shutDOWN"))
+   
 
 def listFriends():
     print("What is the server's port?")
@@ -133,19 +133,40 @@ def listFriends():
         print("Are you sure that port exists?")
         
 def onlineFriends():
-    print("What is this server's port?")
-    portToCall = int(input().strip())
-    
+    print("What is the server's port?")
+    portToCall = input().strip()
+
     print("Which server should be notified?")
-    notifyPort = int(input().strip())
-    
+    notifyPort = input().strip()
+
     try:
-        response = requests.post(f"http://localhost:{portToCall}/", json=request("online"))
+        response = requests.post(f"http://localhost:{portToCall}/", json=request("online", params={"port": notifyPort}))
         parsed = parse(response.json())
         print(parsed.result)
     except:
         print("Are you sure that port exists?")
 
+def notifyOffline():
+    print("What is the server's port?")
+    portToCall = input().strip()
+
+    try:
+        response = requests.post(f"http://localhost:{portToCall}/", json=request("offline", params={"port": portToCall}))
+        parsed = parse(response.json())
+        print(parsed.result)
+    except:
+        print("Are you sure that port exists?")
+
+def sendHeartbeat():
+    print("What is the server's port?")
+    portToCall = input().strip()
+
+    try:
+        response = requests.post(f"http://localhost:{portToCall}/", json=request("heartbeat"))
+        parsed = parse(response.json())
+        print(parsed.result)
+    except:
+        print("Are you sure that port exists?")
 
 print("Welcome!")
 
@@ -161,6 +182,12 @@ while True:
     print("8. Start a new server")
     print("9. Shutdown the server")
     print("10. List Friends")
+    print("11. Notify Friends That You're Online")
+    print("12. Notify Friends That You're Offline")
+    print("13. Send Heartbeat")
+    print("14. Pass Message")
+
+                
 
     option = input().strip()
     
@@ -199,6 +226,15 @@ while True:
     elif option == 10:
         listFriends()
     
-        
+    elif option == 11:
+        onlineFriends()
+    
+    elif option == 12:
+        notifyOffline()
+    
+    elif option == 13:
+        sendHeartbeat()
+
+    
     
         
