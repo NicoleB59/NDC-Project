@@ -3,6 +3,10 @@ import requests
 import base64
 import os
 
+myFriends = list()
+myFriends.append(5001)
+myFriends.append(5002)
+
 
 def sendPing():
     # send a request to the server
@@ -115,58 +119,31 @@ def startNewServer():
     except Exception as e:
         print("Are you sure that port exists?")
 
+def notifyOnline():
+    portToCall = input()
+    for friend_port in myFriends:
+        try:
+            response = requests.post(f'http://localhost:{friend_port}/online', json={'port': portToCall})
+            if response.status_code == 200:
+                print(f"Notified server on port {friend_port} that client {portToCall} is online.")
+        except Exception as e:
+            print(f"Failed to notify server on port {friend_port}: {str(e)}")
+
 def shutDownServer():
+
     print("Enter server number to shutdown: ")
     portToCall = input().strip()
     requests.post(f"http://localhost:{portToCall}/", json=request("shutDOWN"))
-   
-
-def listFriends():
-    print("What is the server's port?")
-    portToCall = int(input().strip())
     
-    try:
-        response = requests.post(f"http://localhost:{portToCall}/", json=request("list_friends"))
-        parsed = parse(response.json())
-        print(parsed.result)
-    except:
-        print("Are you sure that port exists?")
-        
-def onlineFriends():
-    print("What is the server's port?")
-    portToCall = input().strip()
+    # Notify friends that this client is going offline
+    for friend_port in myFriends:
+        try:
+            response = requests.post(f'http://localhost:{friend_port}/offline', json={'port': current_port})
+            if response.status_code == 200:
+                print(f"Notified server on port {friend_port} that client {portToCall} is offline.")
+        except Exception as e:
+            print(f"Failed to notify server on port {friend_port}: {str(e)}")
 
-    print("Which server should be notified?")
-    notifyPort = input().strip()
-
-    try:
-        response = requests.post(f"http://localhost:{portToCall}/", json=request("online", params={"port": notifyPort}))
-        parsed = parse(response.json())
-        print(parsed.result)
-    except:
-        print("Are you sure that port exists?")
-
-def notifyOffline():
-    print("What is the server's port?")
-    portToCall = input().strip()
-
-    try:
-        response = requests.post(f"http://localhost:{portToCall}/", json=request("offline", params={"port": portToCall}))
-        parsed = parse(response.json())
-        print(parsed.result)
-    except:
-        print("Are you sure that port exists?")
-
-def sendHeartbeat():
-    print("What is the server's port?")
-    portToCall = input().strip()
-
-    try:
-        response = requests.post(f"http://localhost:{portToCall}/", json=request("heartbeat"))
-        parsed = parse(response.json())
-        print(parsed.result)
-    except:
-        print("Are you sure that port exists?")
 
 print("Welcome!")
 
@@ -182,12 +159,12 @@ while True:
     print("8. Start a new server")
     print("9. Shutdown the server")
     print("10. List Friends")
+    print("11. Add Friend")
+    print("12. Remove Friend")
+
     print("11. Notify Friends That You're Online")
     print("12. Notify Friends That You're Offline")
-    print("13. Send Heartbeat")
-    print("14. Pass Message")
 
-                
 
     option = input().strip()
     
@@ -224,17 +201,7 @@ while True:
         shutDownServer()
     
     elif option == 10:
-        listFriends()
+        list_friends()
     
     elif option == 11:
-        onlineFriends()
-    
-    elif option == 12:
-        notifyOffline()
-    
-    elif option == 13:
-        sendHeartbeat()
-
-    
-    
-        
+        notifyOnline()
